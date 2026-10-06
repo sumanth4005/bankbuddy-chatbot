@@ -2,7 +2,7 @@
 
 A retrieval-augmented generation (RAG) chatbot that answers common banking customer questions for a fictional bank ("Demo Bank"). It combines semantic search over a curated FAQ dataset with the Gemini API, and adds banking-specific safety rules: sensitive-data blocking and human-agent handoff.
 
-**🔗 Live demo:** [Try BankBuddy on Hugging Face Spaces](https://huggingface.co/spaces/YOUR-USERNAME/bankbuddy-chatbot)
+**🔗 Live demo:** [Try BankBuddy on Streamlit](https://bankbuddy-chatbot.streamlit.app)
 
 > The FAQ categories are modeled on the kinds of questions I handled in banking customer service. All fees, limits, and phone numbers are fictional demo values.
 
@@ -15,7 +15,7 @@ A retrieval-augmented generation (RAG) chatbot that answers common banking custo
 - **PII protection:** messages containing account numbers, SSNs, PINs, or passwords are blocked before reaching the LLM.
 - **Agent handoff:** out-of-scope questions are routed to a human agent instead of guessed.
 - **Resilient API calls:** automatic retries and model fallback when the LLM provider is busy.
-- **Web interface:** Gradio chat UI, deployed on Hugging Face Spaces.
+- **Web interface:** Streamlit chat app deployed on Streamlit Community Cloud (plus a Gradio version used during development).
 
 ---
 
@@ -92,9 +92,9 @@ An out-of-scope question (car loan) is handed off to an agent instead of answere
 - **Python**
 - **Sentence-Transformers** (`all-mpnet-base-v2`) for semantic search
 - **Google Gemini API** (`google-genai`) for answer generation
-- **Gradio** for the chat interface
+- **Streamlit** for the deployed chat app (Gradio for the Colab prototype)
 - **Pandas** for FAQ data handling
-- **Hugging Face Spaces** for deployment
+- **Streamlit Community Cloud** for deployment
 - **Google Colab** for development and evaluation
 
 ---
@@ -102,7 +102,8 @@ An out-of-scope question (car loan) is handed off to an agent instead of answere
 ## 📁 Project Structure
 
 ```
-├── app.py                      # Full chatbot + Gradio app (used by Hugging Face Spaces)
+├── streamlit_app.py            # Deployed chatbot (Streamlit Community Cloud)
+├── app.py                      # Gradio version of the same chatbot
 ├── requirements.txt            # Python dependencies
 ├── banking_chatbot.ipynb       # Development and evaluation notebook
 ├── Screenshot 1.png, screenshot 2-5.png   # Demo screenshots
@@ -118,14 +119,13 @@ An out-of-scope question (car loan) is handed off to an agent instead of answere
    ```bash
    pip install -r requirements.txt
    ```
-3. Set your API key as an environment variable:
-   ```bash
-   export GEMINI_API_KEY="your-key-here"      # macOS/Linux
-   set GEMINI_API_KEY=your-key-here           # Windows
+3. Create a file `.streamlit/secrets.toml` with your key (never commit this file):
+   ```toml
+   GEMINI_API_KEY = "your-key-here"
    ```
 4. Run the app:
    ```bash
-   python app.py
+   streamlit run streamlit_app.py
    ```
 
 ---

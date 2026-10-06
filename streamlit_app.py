@@ -185,9 +185,11 @@ def call_gemini(prompt):
                     ),
                 )
                 return response.text
-            except errors.ServerError:  # 503 busy: wait, then retry
+            except errors.ServerError as e:  # 503 busy: wait, then retry
+                print(f"[Gemini] {model} server error: {e}")
                 time.sleep(2 * (attempt + 1))
-            except errors.ClientError:  # model unavailable or quota: try next model
+            except errors.ClientError as e:  # bad key, model unavailable or quota: try next model
+                print(f"[Gemini] {model} client error: {e}")
                 break
     return "Sorry, our assistant is temporarily unavailable. Please try again shortly or contact an agent."
 
