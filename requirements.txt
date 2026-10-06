@@ -1,3 +1,0 @@
-google-genai
-sentence-transformers
-pandas
