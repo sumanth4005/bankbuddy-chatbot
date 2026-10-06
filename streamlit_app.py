@@ -168,11 +168,14 @@ Rules:
 - For fraud or stolen cards, tell the customer to act immediately.
 - Be friendly and concise (2-4 sentences)."""
 
+SHOW_DEBUG = True  # temporary: shows the real error in the chat. Set to False when fixed.
+
 # Tried in order: if one is busy or unavailable, the next one is used
 MODELS = ["gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-3.8-flash"]
 
 
 def call_gemini(prompt):
+    last_error = ""
     for model in MODELS:
         for attempt in range(2):
             try:
@@ -186,12 +189,17 @@ def call_gemini(prompt):
                 )
                 return response.text
             except errors.ServerError as e:  # 503 busy: wait, then retry
-                print(f"[Gemini] {model} server error: {e}")
+                last_error = f"{model}: {e}"
+                print(f"[Gemini] {last_error}")
                 time.sleep(2 * (attempt + 1))
-            except errors.ClientError as e:  # bad key, model unavailable or quota: try next model
-                print(f"[Gemini] {model} client error: {e}")
+            except Exception as e:  # bad key, model unavailable, quota, network: try next model
+                last_error = f"{model}: {type(e).__name__}: {e}"
+                print(f"[Gemini] {last_error}")
                 break
-    return "Sorry, our assistant is temporarily unavailable. Please try again shortly or contact an agent."
+    msg = "Sorry, our assistant is temporarily unavailable. Please try again shortly or contact an agent."
+    if SHOW_DEBUG:
+        msg += f"\n\n(Debug: {last_error[:300]})"
+    return msg
 
 
 def ask_bot(question):
