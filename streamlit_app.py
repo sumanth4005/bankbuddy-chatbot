@@ -168,10 +168,17 @@ Rules:
 - For fraud or stolen cards, tell the customer to act immediately.
 - Be friendly and concise (2-4 sentences)."""
 
-SHOW_DEBUG = True  # temporary: shows the real error in the chat. Set to False when fixed.
+# Set SHOW_DEBUG = true in Streamlit secrets to see the real error in the chat while troubleshooting
+SHOW_DEBUG = str(st.secrets.get("SHOW_DEBUG", "false")).lower() == "true"
 
 # Tried in order: if one is busy or unavailable, the next one is used
-MODELS = ["gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-3.8-flash"]
+MODELS = [
+    "gemini-3.5-flash-lite",
+    "gemini-3.6-flash",
+    "gemini-3.7-flash",
+    "gemini-3.8-flash",
+    "gemini-3.5-flash",
+]
 
 
 def call_gemini(prompt):
