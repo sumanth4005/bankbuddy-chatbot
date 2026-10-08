@@ -1,0 +1,3 @@
+[server]
+# Stops harmless "torchvision" warnings from the file watcher
+fileWatcherType = "none"
